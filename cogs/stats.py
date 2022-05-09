@@ -58,7 +58,7 @@ class Core(discord.Cog):
 
         embed.add_field(name="🕗 КПД", value=f"{data.get('kpd')}", inline=False)
         embed.add_field(
-            name='⚔️ W/L | Винрейт%',
+            name='⚔️ W/Overall | Винрейт%',
             value=f"{data.get('win')}/{data.get('mission')} **|** `{data.get('winrate')}%`"
         )
 
