@@ -1,0 +1,2 @@
+class FailedToGetStats(Exception):
+    pass
