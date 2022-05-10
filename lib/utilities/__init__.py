@@ -1,6 +1,23 @@
 from typing import Union
 
+from lang import ua, ru, en
+from .cog_loader import loader as cog_loader
+
 import discord
+
+
+def code_to_locale(code: str):
+    match code:
+        case "ru":
+            loc = ru
+        case "en":
+            loc = en
+        case "ua":
+            loc = ua
+        case _:
+            loc = en
+
+    return loc
 
 
 def rank_to_colour(rank: str) -> Union[None, discord.Color]:

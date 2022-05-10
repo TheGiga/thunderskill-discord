@@ -2,11 +2,11 @@ import calendar
 from datetime import datetime
 
 import discord
-from discord import SlashCommandOptionType
 
 import lib.errors
 from lib import Player
-from lib.utilities import rank_to_colour
+from lib.models import Guild
+from lib.utilities import rank_to_colour, code_to_locale
 
 
 class Core(discord.Cog):
@@ -30,6 +30,8 @@ class Core(discord.Cog):
                 choices=["RB", "AB", "SB"]
             ) = "AB"
     ):
+        thunder_guild: Guild = await Guild.get_or_create(ctx.guild)
+
         try:
             info = await Player.from_nickname(nickname=nickname)
         except lib.errors.FailedToGetStats:
@@ -48,28 +50,25 @@ class Core(discord.Cog):
             case _:
                 data = info.arcade
 
+        loc = code_to_locale(code=thunder_guild.locale)
+
         embed = discord.Embed(
             title=f"{info.nickname} - {info.rank}",
             colour=rank_to_colour(info.rank),
             timestamp=discord.utils.utcnow()
         )
-        embed.description = f"Отображается статистика в режиме **{game_type}**.\n" \
-                            f"Последнее обновление: <t:{calendar.timegm(datetime.timetuple(info.last_update))}:R>"
+        embed.description = f"{loc.STATISTICS_TYPE.format(game_type)}" \
+                            f"{loc.LAST_UPDATE} <t:{calendar.timegm(datetime.timetuple(info.last_update))}:R>"
 
-        embed.add_field(name="🕗 КПД", value=f"{data.get('kpd')}", inline=False)
+        embed.add_field(name="🕗 KPD", value=f"{data.get('kpd')}", inline=False)
         embed.add_field(
-            name='⚔️ W/Overall | Винрейт%',
+            name='⚔️ W/Overall | Winrate%',
             value=f"{data.get('win')}/{data.get('mission')} **|** `{data.get('winrate')}%`"
         )
 
         embed.add_field(
             name='💀 KD | KB',
             value=f"{data.get('kd')} **|** {data.get('kb')} "
-        )
-
-        embed.add_field(
-            name='ㅤ', inline=False,
-            value=f"[Профиль на ThunderSkill](https://thunderskill.com/en/stat/{nickname})"
         )
 
         embed.set_footer(text='by gigalegit-#0880')

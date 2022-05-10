@@ -2,6 +2,8 @@ import os
 import discord
 import art
 from dotenv import load_dotenv
+from lib.utilities import cog_loader
+from lib.utilities.db import Base, engine
 
 load_dotenv()
 
@@ -14,5 +16,8 @@ async def on_ready():
 
 
 if __name__ == "__main__":
-    bot_instance.load_extension("cogs.stats")
+    from lib.models import Guild
+    Base.metadata.create_all(bind=engine)
+
+    cog_loader(bot_instance=bot_instance)
     bot_instance.run(os.getenv("TOKEN"))
