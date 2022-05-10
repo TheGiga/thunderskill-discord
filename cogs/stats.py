@@ -73,7 +73,15 @@ class Core(discord.Cog):
 
         embed.set_footer(text='by gigalegit-#0880')
 
-        await ctx.respond(embed=embed)
+        view = discord.ui.View()
+        btn = discord.ui.Button(
+            label="ThunderSkill",
+            url=f"https://thunderskill.com/en/stat/{info.nickname}",
+            emoji="🔖"
+        )
+        view.add_item(btn)
+
+        await ctx.respond(embed=embed, view=view)
 
 
 def setup(bot: discord.Bot):
