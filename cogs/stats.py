@@ -28,7 +28,7 @@ class Core(discord.Cog):
                 str, name='gamemode',
                 description="Game mode to check stats from / Игровой режим по которому будет выведена статистика",
                 choices=["RB", "AB", "SB"]
-            ) = "AB"
+            )
     ):
         thunder_guild: Guild = await Guild.get_or_create(ctx.guild)
 
