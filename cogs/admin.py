@@ -1,6 +1,8 @@
 import discord
+from discord import SlashCommand
 from discord.ext.commands import has_permissions
 
+import config
 import lib.models
 from lib.models import Guild
 from lib.utilities import code_to_locale
@@ -11,16 +13,39 @@ class Admin(discord.Cog):
     def __init__(self, bot):
         self.bot: discord.Bot = bot
 
-    @discord.slash_command(name='info', description='Basic bot info.')
+    @discord.slash_command(name='help', description='Basic bot info.')
     async def information(self, ctx: discord.ApplicationContext):
         thunder_guild: lib.models.Guild = await lib.models.Guild.get_or_create(ctx.guild)
         lcl = thunder_guild.locale
 
         loc = lib.code_to_locale(lcl)
 
-        embed = discord.Embed(title="Thunder Skill", color=discord.Colour.embed_background())
+        embed = discord.Embed(colour=discord.Colour.embed_background())
 
+        embed.add_field(name='🏓 Client Latency', value=f'{round(self.bot.latency * 1000)}ms')
+        embed.add_field(name='📐 Registered Commands', value=str(len(self.bot.commands)))
+        embed.add_field(name='🤖 Loaded Cogs', value=str(len(self.bot.cogs)))
         embed.add_field(name=loc.LANGUAGE, value=f"{loc.FLAG} {lcl.upper()}")
+
+        embed.set_thumbnail(url=self.bot.user.avatar.url)
+
+        embed.set_author(name='by gigalegit-#0880', icon_url=config.OWNER_AV, url='https://github.com/TheGiga')
+
+        united_description = ''
+        last_cog = ''
+        for command in self.bot.commands:
+            if type(command) is not SlashCommand:
+                continue
+            if command.cog.qualified_name != 'Admin':
+                if last_cog != command.cog.qualified_name:
+                    united_description += f'**{command.cog.qualified_name}**\n'
+                last_cog = command.cog.qualified_name
+                united_description += f'> `/{command.name}` - ' \
+                                      f'{command.description if command.name != "help" else "**THIS COMMAND**"}\n'
+            else:
+                continue
+
+        embed.description = united_description
 
         embed.set_footer(text=f"{loc.GUILDS}: {len(self.bot.guilds)}")
 

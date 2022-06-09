@@ -9,13 +9,13 @@ from lib.models import Guild
 from lib.utilities import rank_to_colour, code_to_locale
 
 
-class Core(discord.Cog):
+class PlayerStats(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @discord.slash_command(
         name='player',
-        description="Check player statistics by Nickname / Проверить статистику поьзователя по Никнейму"
+        description="Check player statistics by Nickname / Проверить статистику пользователя по Никнейму"
     )
     async def player_command(
             self,
@@ -36,7 +36,7 @@ class Core(discord.Cog):
             info = await Player.from_nickname(nickname=nickname)
         except lib.errors.FailedToGetStats:
             return await ctx.respond(
-                content=f"**:x: Игрок `{nickname}` не найден!**",
+                content=f"**:x: Player `{nickname}` not found!**",
                 ephemeral=True
             )
 
@@ -60,7 +60,7 @@ class Core(discord.Cog):
         embed.description = f"{loc.STATISTICS_TYPE.format(game_type)}" \
                             f"{loc.LAST_UPDATE} <t:{calendar.timegm(datetime.timetuple(info.last_update))}:R>"
 
-        embed.add_field(name="🕗 KPD", value=f"{data.get('kpd')}", inline=False)
+        embed.add_field(name="🕗 KPD", value=f"{data.get('kpd')}%", inline=False)
         embed.add_field(
             name='⚔️ W/Overall | Winrate%',
             value=f"{data.get('win')}/{data.get('mission')} **|** `{data.get('winrate')}%`"
@@ -85,4 +85,4 @@ class Core(discord.Cog):
 
 
 def setup(bot: discord.Bot):
-    bot.add_cog(Core(bot=bot))
+    bot.add_cog(PlayerStats(bot=bot))
