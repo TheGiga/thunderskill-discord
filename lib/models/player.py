@@ -24,7 +24,9 @@ class PlayerModel(BaseModel):
 
         nickname = stats.get('nick')
         rank = stats.get('rank')
-        last_update = datetime.datetime.strptime(stats.get("last_stat"), '%Y-%m-%d %H:%M:%S')
+        last_update = \
+            datetime.datetime.strptime(stats.get("last_stat"), '%Y-%m-%d %H:%M:%S') - datetime.timedelta(hours=3)
+        # had to add -3 hours because of api's shit
 
         return cls(
             nickname=nickname,
@@ -34,6 +36,3 @@ class PlayerModel(BaseModel):
             realistic=stats.get('r'),
             simulator=stats.get('s')
         )
-
-
-

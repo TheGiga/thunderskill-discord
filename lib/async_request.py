@@ -9,4 +9,4 @@ async def get(string: str) -> Union[dict, None]:
             if resp.status == 404:
                 return None
 
-            return await resp.json()
+            return await resp.json(content_type=None)
