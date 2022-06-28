@@ -52,11 +52,19 @@ class PlayerStats(discord.Cog):
 
         loc = code_to_locale(code=thunder_guild.locale)
 
+        if info.rank in ["Doesn`t play", "Не играет"]:
+            return await ctx.respond(
+                ephemeral=True,
+                content="💢 This player has no statistics in this gamemode *or we couldn't get it.*"
+            )
+
         embed = discord.Embed(
             title=f"{info.nickname} - {info.rank}",
-            colour=rank_to_colour(info.rank),
             timestamp=discord.utils.utcnow()
         )
+
+        embed.colour = rank_to_colour(info.rank)
+
         embed.description = f"{loc.STATISTICS_TYPE.format(game_type)}" \
                             f"{loc.LAST_UPDATE} <t:{calendar.timegm(datetime.timetuple(info.last_update))}:R>"
 
